@@ -22,6 +22,10 @@ public:
 private slots:
     void on_actionOpen_triggered();
 
+    void on_actionSave_Token_File_triggered();
+
+    void on_actionNew_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString inputFieldFile = "";
