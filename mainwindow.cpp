@@ -36,3 +36,32 @@ void MainWindow::on_actionOpen_triggered()
         file.close();
 }
 
+
+void MainWindow::on_actionSave_Token_File_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save as");
+
+    //.xml or .json according to output global var type
+    QString fileExtension = "txt";
+    QFile file(fileName+"."+fileExtension);
+
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+        QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
+        return;
+    }
+
+    QTextStream out(&file);
+    QString text = ui->textBrowser->toPlainText();
+    out << text;
+    file.close();
+
+}
+
+
+void MainWindow::on_actionNew_triggered()
+{
+    inputFieldFile.clear();
+    ui->textEdit->setPlainText(QString());
+    ui->textBrowser->clear();
+}
+
