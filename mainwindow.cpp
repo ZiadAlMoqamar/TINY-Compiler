@@ -65,3 +65,14 @@ void MainWindow::on_actionNew_triggered()
     ui->textBrowser->clear();
 }
 
+
+void MainWindow::on_actionScan_triggered()
+{
+    string scannerOutput;
+    inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    scannerOutput=Scanner(inFile.fileContent);
+    inFile.isScanned=true;
+    QString QScannerOutput = QString::fromStdString(scannerOutput);
+    ui->textBrowser->setPlainText(QScannerOutput);
+}
+

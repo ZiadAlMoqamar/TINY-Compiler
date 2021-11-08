@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
+#include "scanner.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,6 +26,8 @@ private slots:
     void on_actionSave_Token_File_triggered();
 
     void on_actionNew_triggered();
+
+    void on_actionScan_triggered();
 
 private:
     Ui::MainWindow *ui;

@@ -1,5 +1,6 @@
 #ifndef SCANNER_H
 #define SCANNER_H
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,7 +12,7 @@ class Token
 public:
 string strValue = "";
 string type ="";
-Token(string strValue, string type);
+Token(string strValue = "",string type = "");
 
 };
 static string whitespace = " \n\t\r\v";

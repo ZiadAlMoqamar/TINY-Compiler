@@ -1,6 +1,6 @@
 #include "scanner.h"
 using namespace std;
-Token::Token(string strValue = "",string type = "")
+Token::Token(string strValue ,string type )
 {
     this->strValue = strValue;
     this->type = type;
