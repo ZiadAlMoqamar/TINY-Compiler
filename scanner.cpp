@@ -7,7 +7,9 @@ Token::Token(string strValue ,string type )
 }
 string idRes (string strValue)
 {
-    if(reservedWords.find(strValue) != string::npos) return "reserved word";
+    //if(reservedWords.find(strValue) != string::npos) return "reserved word";
+    if(find(reservedWords.begin(),reservedWords.end(),strValue)!=reservedWords.end())
+        return "reserved word";
     return "identifier";
 }
 string symbolType(char c)
@@ -23,6 +25,7 @@ string symbolType(char c)
         case '(': return "left parenthesis";
         case ')': return "right parenthesis";
         case ';': return "semicolon";
+     default: return "error";
     }
 }
 string Scanner(string TinyFileText)

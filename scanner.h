@@ -16,12 +16,11 @@ Token(string strValue = "",string type = "");
 
 };
 static string whitespace = " \n\t\r\v";
-static string reservedWords = "if then else end repeat until read write";
+static vector <string> reservedWords={"if", "then", "else", "end", "repeat", "until", "read", "write"};
 static string specialSymbols = "+-*/=<();";
-string lowerCase(string x);
 string idRes (string strValue);
 string symbolType(char c);
 string Scanner(string TinyFileText);
-void testScanner();
+
 
 #endif // SCANNER_H
