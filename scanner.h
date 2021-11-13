@@ -16,7 +16,7 @@ Token(string strValue = "",string type = "");
 
 };
 static string whitespace = " \n\t\r\v";
-static string reservedWords = "if then else end repeat until read write begin int main string real";
+static string reservedWords = "if then else end repeat until read write";
 static string specialSymbols = "+-*/=<();";
 string lowerCase(string x);
 string idRes (string strValue);

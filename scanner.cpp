@@ -5,18 +5,9 @@ Token::Token(string strValue ,string type )
     this->strValue = strValue;
     this->type = type;
 }
-string lowerCase(string x)
-{
-    string result;
-    for(auto i = x.begin(); i!=x.end(); ++i)
-    {
-        result += tolower(*i);
-    }
-    return result;
-}
 string idRes (string strValue)
 {
-    if(reservedWords.find(lowerCase(strValue)) != string::npos) return "reserved word";
+    if(reservedWords.find(strValue) != string::npos) return "reserved word";
     return "identifier";
 }
 string symbolType(char c)
@@ -120,9 +111,7 @@ string Scanner(string TinyFileText)
                     }
                     break;
                     case 4:
-
-                    //Variables can have digits as long as it comes after a letter
-                    if(isalpha(TinyFileText[index])||isdigit(TinyFileText[index]))
+                    if(isalpha(TinyFileText[index]))
                     {
                         strValue += TinyFileText[index];
                         index++;
@@ -166,21 +155,5 @@ string Scanner(string TinyFileText)
 
     return tokenTable;
 }
-void testScanner()
-{
-    string line;
-    string fileText;
-    ifstream myfile ("tinyTestError.txt");
-    if (myfile.is_open())
-    {
-    while ( getline (myfile,line) )
-    {
-        fileText+=line+"\n";
-    }
-    string tokenTable = Scanner(fileText);
-    cout<<tokenTable;
 
-    }
-    else cout << "Unable to open file";
-}
 
