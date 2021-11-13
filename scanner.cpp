@@ -42,7 +42,7 @@ string Scanner(string TinyFileText)
 
             //Checks for a token
             //Basically, this is getToken()
-            while (state != 6&& index<length)
+            while (state != 6)
             {
 
                 switch(state)
@@ -79,7 +79,10 @@ string Scanner(string TinyFileText)
                         tokenList.push_back(temp);
                         index++;
                         state = 6;
-
+                    }
+                    else if(index == length)
+                    {
+                        state =6;
                     }
                     else
                         {   strValue+=TinyFileText[index];
@@ -107,7 +110,8 @@ string Scanner(string TinyFileText)
                             strValue += TinyFileText[index];
                             index++;
                         }
-                    else {
+                    else if(!isdigit(TinyFileText[index])||index == length -1)
+                    {
                         Token temp(strValue,"number");
                         tokenList.push_back(temp);
                         state = 6;
@@ -119,7 +123,7 @@ string Scanner(string TinyFileText)
                         strValue += TinyFileText[index];
                         index++;
                     }
-                    else
+                    else if (!isalpha(TinyFileText[index]) || index == length-1)
                     {
                         Token temp(strValue,idRes(strValue));
                         tokenList.push_back(temp);
@@ -135,7 +139,7 @@ string Scanner(string TinyFileText)
                             tokenList.push_back(temp);
                             state = 6;
                         }
-                    else
+                    else if(TinyFileText[index] != '='||index == length -1)
                     {
                         Token temp(strValue,"error");
                         tokenList.push_back(temp);
