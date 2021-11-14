@@ -63,6 +63,7 @@ void MainWindow::on_actionNew_triggered()
     inputFieldFile.clear();
     ui->textEdit->setPlainText(QString());
     ui->textBrowser->clear();
+    ui->actionSave_Token_File->setEnabled(false);
 }
 
 
@@ -74,5 +75,17 @@ void MainWindow::on_actionScan_triggered()
     inFile.isScanned=true;
     QString QScannerOutput = QString::fromStdString(scannerOutput);
     ui->textBrowser->setPlainText(QScannerOutput);
+    ui->actionSave_Token_File->setEnabled(inFile.isScanned);
+}
+
+
+void MainWindow::on_textEdit_textChanged()
+{
+    if(ui->textEdit->toPlainText()==""){
+        ui->actionScan->setEnabled(false);
+    }
+    else{
+        ui->actionScan->setEnabled(true);
+    }
 }
 

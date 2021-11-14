@@ -118,11 +118,17 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionScan">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Scan</string>
    </property>
   </action>
   <action name="actionSave_Token_File">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save Token File</string>
    </property>

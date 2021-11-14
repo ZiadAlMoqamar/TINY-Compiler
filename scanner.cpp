@@ -7,7 +7,7 @@ Token::Token(string strValue ,string type )
 }
 string idRes (string strValue)
 {
-    //if(reservedWords.find(strValue) != string::npos) return "reserved word";
+
     if(find(reservedWords.begin(),reservedWords.end(),strValue)!=reservedWords.end())
         return "reserved word";
     return "identifier";
