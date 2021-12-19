@@ -1,0 +1,94 @@
+program -> stmt-seq
+
+procedure program;
+
+stmt-seq;
+
+end program;
+=====================
+stmt-seq -> stmt{;stmt}
+
+procedure stmt-seq
+stmt;
+while(token == ;)
+match(;)
+stmt;
+end while;
+end stmt-seq
+stmt -> if-stmt | repeat-stmt | assign-stmt | read-stmt | write-stmt
+=====================
+procedure stmt;
+case token of 
+if:
+    if-stmt;
+repeat:
+    repeat-stmt;
+identifier:
+    assign-stmt;
+read:
+    read-stmt;
+write:
+    write-stmt;
+else error;
+end case;
+end stmt;
+=====================
+if-stmt -> if (exp) then stmt-seq [else stmt-seq] end
+
+procedure if-stmt;
+var temp, newTemp:SyntaxTree;
+Node * tempPtr;
+match(if);
+temp.shape = rect;
+temp.tokenValue = if;
+temp.id = genId();
+match(()
+
+exp(tempPtr);
+temp.childNode[0] = tempPtr;
+match())
+match(then);
+temp.childNode[1]=stmt-seq();
+if(token == else)
+    match(else);
+    temp.childNode[2] = stmt-seq();
+end if;
+match(end);
+end if-stmt;
+=====================
+repeat-stmt -> repeat stmt-seq until exp
+
+procedure repeat-stmt;
+match(repeat);
+stmt-seq;
+match(until);
+exp;
+end repeat-stmt;
+=====================
+assign-stmt -> identifier := exp
+
+procedure assign-stmt;
+match(identifier);
+match(:=);
+exp;
+
+end assign-stmt;
+=====================
+read-stmt -> read identifier
+=====================
+write-stmt -> write exp
+=====================
+exp -> simple-exp [comparison-op simple-exp]
+=====================
+comparison-op -> < | =
+=====================
+simple-exp -> term {addop term}
+=====================
+addop -> + | -
+=====================
+term -> factor {mulop factor}
+=====================
+mulop -> \* | /
+=====================
+factor -> (exp) | number | identifier
+=====================
