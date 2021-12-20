@@ -6,7 +6,7 @@ Node :: Node()
         childrenNode[i] = nullptr; //Initialize all nodes by nullptr
     }
 }
-Node::Node(Token t,std::string shape)
+Node::Node(std::string t ,std::string shape)
 {
     this->t = t;
     this->shape = shape;
@@ -16,9 +16,103 @@ Token::Token(std::string strValue,std::string type )
     this->strValue = strValue;
     this->type = type;
 }
-void SyntaxTree::treeParser()
+void SyntaxTree::treeParser(Node * root)
+{   
+    if(root == nullptr)
+        return;
+    outputString += addNode(root->tokenId,root->shape,root->t,root->subTitle); //Creating the node itself
+    for(int i = 0; i < CHILDREN; i++)
+    {   
+        Node * child = root->childrenNode[i];   
+        if(child == nullptr) 
+            break;
+        //draw children
+        treeParser(child);
+        outputString += addChild(root->tokenId,child->tokenId);
+        
+        if(i>0)
+        {   
+            Node * prevChild = root->childrenNode[i-1];
+            if(prevChild->shape == "oval"&&child->shape == "oval" )
+                outputString += addInvisibleLine(prevChild->tokenId,child->tokenId);
+        }
+    }
+    //then draw neighbors
+    Node * neighbor = root->neighbor;
+    if(neighbor != nullptr)
+    {
+        treeParser(neighbor);
+        outputString += addNeighbour(root->tokenId, neighbor->tokenId);
+    }
+}
+std::string getTokenType()
+{   if(tokenCounter<inputTokens.size())
+        return inputTokens[tokenCounter].type;
+    return "ENDFILE";
+}
+std::string getSubTitle()
 {
+    return "("+inputTokens[tokenCounter].strValue+")";
+}
+std::string addNode(long long id, std::string shape, std::string title, std::string subtitle){
+std::string funcOutput ="\n";
+funcOutput += "node[shape =" + shape + " label=\"" + title + "\\n" + subtitle + "\"] " + std::to_string(id);
+return funcOutput;
+}
+std::string addChild(long long parentId, long long childId) {
+  std::string funcOutput = "\n";
+  funcOutput += std::to_string(parentId) + "--" + std::to_string(childId);
+  return funcOutput;
+}
+std::string addNeighbour(long long leftId, long long rightId) {
+  std::string funcOutput = "\n";
+  funcOutput += "{rank = same;"+std::to_string(leftId)+"; "+std::to_string(rightId)+";}"+ std::to_string(leftId) + "--" + std::to_string(rightId);
+  return funcOutput;
+}
+std::string addInvisibleLine(long long leftId, long long rightId) {
+  std::string funcOutput = "\n";
+  funcOutput += "{rank = same;" + std::to_string(leftId) + "; " + std::to_string(rightId) + ";}" + std::to_string(leftId) + "--" + std::to_string(rightId) +"[style = invis];";
+  return funcOutput;
+}
+std::vector <Token> parseFileText(std::string file)
+{   
 
+    int fileLength = file.length();
+    int j = 0;
+    std::string temp = "";
+    std::vector<Token> output;
+    bool value = true;
+    Token p;
+    for(int i = 0; i <fileLength; ++i)
+    {
+        i = file.find_first_not_of(inputParse,j);
+        if(i != std::string::npos)
+        {
+            j = file.find_first_of(inputParse,i);
+            temp = file.substr(i,j-i);
+            if(value)
+               { 
+                p.strValue = temp;
+                value = false;
+                }
+            else
+            {
+                p.type = temp;
+                output.push_back(p);
+                value = true;
+            }
+            i = j;
+        }
+    }
+    return output;
+}
+std::string dotLang(std::vector<Token> input)
+{
+    inputTokens = input;
+    SyntaxTree program;
+    program.rootptr= stmtSeq(); //Start the program
+    program.treeParser(program.rootptr);
+    return "graph main{"+outputString+"\n}";
 }
 int genId()
 {
@@ -26,115 +120,103 @@ int genId()
 }
 void error()
 {
-    std::cout<<"Error:incorrect token at token no."<<tokenCounter<<"\n";
+    std::cout<<"Error:incorrect token at token no."<<tokenCounter<<" statements not accepted!\n";
     exit(EXIT_FAILURE); //Stops the entire program
     //Add different error handling method later
 }
 void match(std::string token)
-{
-    if(token == inputTokens[tokenCounter].type)
+{   
+    if(token == getTokenType())
     {   
         tokenCounter++;
 
     }
     else
-        error();
+    {   
+        if(token !="ENDFILE")
+            error();
+    }
+        
 }
 void unmatch()
 {
     tokenCounter--;
 }
 void testParser()
-{
+{   
     std::string line;
     std::string fileText;
     std::ifstream myfile ("input.txt");
     if (myfile.is_open())
     {
     while ( getline (myfile,line) )
-    {   int index = 0;
-        int temp = 0;
-        bool ee= true;
-        std::string value;
-        Token empty;
+    {   
         fileText+=line+"\n";
-        for(int i = 0; i<2;++i)
-            {
-                int index= line.find_first_not_of(inputParse,temp);
-                if(index !=std::string::npos)
-                {   
-                    temp = line.find_first_of(inputParse,index);
-                    value= line.substr(index,temp-index);
-                    if(ee)
-                        {
-                            empty.strValue= value;
-                            //std::cout<<"strValue:"<<value<<", ";
-                            ee = false;
-                            }
-                    else
-                        {
-                            empty.type=value;
-                           // std::cout<<"Type:"<<value<<"\n";
-                            }
-                        
-                    
-                    index = temp;
-                }
-            }
-            inputTokens.push_back(empty);
-
     }
+    std::cout<< dotLang(parseFileText(fileText))<<std::endl; 
     }
     else std::cout << "Unable to open file";
 }
 Node * factor()
 {
     Node * t = new Node;
-    if(inputTokens[tokenCounter].type == "OPENBRACKET")
+    if(getTokenType() == "OPENBRACKET")
     {
         match("OPENBRACKET");
-        t= exp();
+        t = exp();
         match("CLOSEDBRACKET");
+        return t;
     }
-    else if (inputTokens[tokenCounter].type == "NUMBER")
-    {
-        t->t = inputTokens[tokenCounter];
+    else if (getTokenType() == "NUMBER")
+    {   
+        t->subTitle = getSubTitle();
         match("NUMBER");
-        t->shape = "ellipse";
+        t->t = "const";
+        t->shape = "oval";
         t->tokenId = genId();
+        return t;
     }
-    else if(inputTokens[tokenCounter].type == "IDENTIFIER")
+    else if(getTokenType() == "IDENTIFIER")
     {
-        t->t = inputTokens[tokenCounter];
+        t->subTitle = getSubTitle();
         match("IDENTIFIER");
-        t->shape = "ellipse";
+        t->t = "id";
+        t->shape = "oval";
         t->tokenId = genId();
+        return t;
     }
+    else
+        error();
+    t->t="failed";
+    t->tokenId=genId();
+    t->subTitle="failedS";
     return t;
 }
 Node * term()
 {
     Node * t = new Node;
     Node * q = factor();
-    while (inputTokens[tokenCounter].type  == "MULT" || inputTokens[tokenCounter].type  == "DIV" )
+    while (getTokenType()  == "MULT" || getTokenType()  == "DIV" )
     {
-        if(inputTokens[tokenCounter].type  == "MULT")
-        {
-            t->t = inputTokens[tokenCounter];
+        if(getTokenType()  == "MULT")
+        {   
+            t->subTitle= getSubTitle();
             match("MULT");
+            t->t = "op";
             t->childrenNode[0] =q;
             t->childrenNode[1] = factor();
-            t->shape = "ellipse";
+            t->shape = "oval";
             t->tokenId= genId();
             return t;
         }
-        else if(inputTokens[tokenCounter].type  == "DIV")
+        else if(getTokenType()  == "DIV")
         {
-            t->t = inputTokens[tokenCounter];
+            t->subTitle= getSubTitle();
             match("DIV");
+            t->t = "op";
             t->childrenNode[0] =q;
             t->childrenNode[1] = factor();
-            t->shape = "ellipse";
+            t->shape = "oval";
             t->tokenId= genId();
             return t;
             
@@ -146,66 +228,71 @@ Node * simpleExp()
 {
     Node * t = new Node;
     Node * q = term();
-    while(inputTokens[tokenCounter].type == "PLUS" || inputTokens[tokenCounter].type == "MINUS")
+    while(getTokenType() == "PLUS" || getTokenType() == "MINUS")
     {
-        if(inputTokens[tokenCounter].type == "PLUS")
-        {   t->t = inputTokens[tokenCounter];
+        if(getTokenType() == "PLUS")
+        {   
+            t->subTitle= getSubTitle();
             match("PLUS");
+            t->t = "op";
             t->childrenNode[0] = q;
             t->childrenNode[1] = term();
-            t->shape= "ellipse";
+            t->shape= "oval";
             t->tokenId= genId();
             return t;
             
         }
-        else if(inputTokens[tokenCounter].type == "MINUS")
-        {   t->t = inputTokens[tokenCounter];
+        else if(getTokenType() == "MINUS")
+        {   
+            t->subTitle= getSubTitle();
             match("MINUS");
+            t->t = "op";
             t->childrenNode[0] = q;
             t->childrenNode[1] = term();
-            t->shape= "ellipse";
+            t->shape= "oval";
             t->tokenId= genId();
             return t;
         }
-        return q;
-    }   
+    }
+     return q; 
 }
 Node * exp()
 {   Node * t = new Node;
     Node * q = new Node;
     q =simpleExp();
-    if(inputTokens[tokenCounter].type == "LESSTHAN")
+    if(getTokenType()== "LESSTHAN")
     {   
-        t->t = inputTokens[tokenCounter];
+        t->subTitle= getSubTitle();
         match("LESSTHAN");
+        t->t = "op";
         t->childrenNode[0] = q;
         t->childrenNode[1] = simpleExp();
         t->tokenId = genId();
-        t->shape = "ellipse";
+        t->shape = "oval";
         return t;
     }
-    else if(inputTokens[tokenCounter].type == "EQUAL")
+    else if(getTokenType() == "EQUAL")
     {
-        t->t= inputTokens[tokenCounter];
+        t->subTitle= getSubTitle();
         match("EQUAL");
+        t->t= "op";
         t->childrenNode[0]= q;
         t->childrenNode[1]= simpleExp();
         t->tokenId = genId();
-        t->shape = "ellipse";
+        t->shape = "oval";
         return t;
     }
     return q;
 }
 Node * ifStmt()
 {   Node * t = new Node;
-    t->t = inputTokens[tokenCounter];
     match("IF");
-    match("OPENBRACKET");
+    t->t = "if";
+    
     t->childrenNode[0] = exp();
-    match("CLOSEDBRACKET");
     match("THEN");
     t->childrenNode[1] = stmtSeq();
-    if(inputTokens[tokenCounter].type == "ELSE")
+    if(getTokenType() == "ELSE")
     {
         match("ELSE");
         t->childrenNode[2] = stmtSeq();
@@ -217,8 +304,8 @@ Node * ifStmt()
 }
 Node * repeatStmt()
 {   Node * t = new Node;
-    t->t = inputTokens[tokenCounter];
     match("REPEAT");
+    t->t = "repeat";
     t->childrenNode[0] = stmtSeq();//body
     match("UNTIL");
     t->childrenNode[1] = exp(); //Test
@@ -229,9 +316,9 @@ Node * repeatStmt()
 Node * assignStmt()
 {
     Node * t = new Node;
-    t->t= inputTokens[tokenCounter];
+    t->subTitle= getSubTitle();
     match("IDENTIFIER");
-    t->subTitle= inputTokens[tokenCounter].strValue;
+    t->t= "assign";
     match("ASSIGN");
     t->shape="rect";
     t->tokenId=genId();
@@ -242,9 +329,9 @@ Node * assignStmt()
 Node * readStmt()
 {
     Node * t = new Node; 
-    t->t=inputTokens[tokenCounter];
     match("READ");
-    t->subTitle=inputTokens[tokenCounter].strValue;
+    t->t="read";
+    t->subTitle=getSubTitle();
     match("IDENTIFIER");
     t->shape="rect";
     t->tokenId=genId();
@@ -252,8 +339,8 @@ Node * readStmt()
 }
 Node * writeStmt()
 {   Node * t = new Node; // write node  
-    t->t=inputTokens[tokenCounter];
     match("WRITE");
+    t->t="write";
     t->shape= "rect";   
     t->tokenId= genId(); // creates ID
     t->childrenNode[0] = exp();//Write only has one child
@@ -261,7 +348,7 @@ Node * writeStmt()
 }
 Node * stmt()
 {   
-    std::string tokenType = inputTokens[tokenCounter].type;
+    std::string tokenType = getTokenType();
     if(tokenType == "IF")
     {
        return ifStmt();
@@ -291,7 +378,7 @@ Node *stmtSeq()
 {   Node * t = nullptr;
     t = stmt(); // returns pointer and this will be the root pointer? of this tree
     Node * p = t;
-    while(inputTokens[tokenCounter].type == "SEMICOLON")
+    while(getTokenType()  == "SEMICOLON")
     {   Node * q;
         match("SEMICOLON");
         q = stmt(); // returns pointer ex if
@@ -299,11 +386,4 @@ Node *stmtSeq()
         p = q; // moves variable p to q and starts over. seems like a linked list
     }
     return t; // returns root/start node
-}
-int main()
-{
-    testParser(); //Loads inputTokens
-    SyntaxTree program;
-    program.rootptr= stmtSeq(); //Start the program
-    program.treeParser();
 }

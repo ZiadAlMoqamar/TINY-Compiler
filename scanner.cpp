@@ -5,26 +5,35 @@ Token::Token(string strValue ,string type )
     this->strValue = strValue;
     this->type = type;
 }
+string toUppercase(string str)
+{   int strLen = str.length();
+    for (int i = 0; i < strLen; ++i) 
+    {
+        str[i] = toupper(str[i]);
+    }
+  return str;
+}
+ 
 string idRes (string strValue)
 {
 
     if(find(reservedWords.begin(),reservedWords.end(),strValue)!=reservedWords.end())
-        return "reserved word";
-    return "identifier";
+        return toUppercase(strValue);
+    return "IDENTIFIER";
 }
 string symbolType(char c)
 {
      switch(c)
     {
-        case '+': return "plus";
-        case '-': return "minus";
-        case '*': return "times";
-        case '/': return "over";
-        case '=': return "equal";
-        case '<': return "less than";
-        case '(': return "left parenthesis";
-        case ')': return "right parenthesis";
-        case ';': return "semicolon";
+        case '+': return "PLUS";
+        case '-': return "MINUS";
+        case '*': return "MULT";
+        case '/': return "DIV";
+        case '=': return "EQUAL";
+        case '<': return "LESSTHAN";
+        case '(': return "OPENBRACKET";
+        case ')': return "CLOSEDBRACKET";
+        case ';': return "SEMICOLON";
      default: return "error";
     }
 }
@@ -112,7 +121,7 @@ string Scanner(string TinyFileText)
                         }
                     else if(!isdigit(TinyFileText[index])||index == length -1)
                     {
-                        Token temp(strValue,"number");
+                        Token temp(strValue,"NUMBER");
                         tokenList.push_back(temp);
                         state = 6;
                     }
@@ -135,7 +144,7 @@ string Scanner(string TinyFileText)
                     if(TinyFileText[index] == '=')
                         {   strValue+= TinyFileText[index];
                             index++;
-                            Token temp(strValue,"assign");
+                            Token temp(strValue,"ASSIGN");
                             tokenList.push_back(temp);
                             state = 6;
                         }
@@ -162,5 +171,20 @@ string Scanner(string TinyFileText)
 
     return tokenTable;
 }
+void testScanner()
+{
+    string line;
+    string fileText;
+    ifstream myfile ("tiny.txt");
+    if (myfile.is_open())
+    {
+    while ( getline (myfile,line) )
+    {
+        fileText+=line+"\n";
+    }
+    string tokenTable = Scanner(fileText);
+    cout<<tokenTable;
 
-
+    }
+    else cout << "Unable to open file";
+}

@@ -18,6 +18,7 @@ Token(string strValue = "",string type = "");
 static string whitespace = " \n\t\r\v";
 static vector <string> reservedWords={"if", "then", "else", "end", "repeat", "until", "read", "write"};
 static string specialSymbols = "+-*/=<();";
+string toUppercase(string str);
 string idRes (string strValue);
 string symbolType(char c);
 string Scanner(string TinyFileText);
