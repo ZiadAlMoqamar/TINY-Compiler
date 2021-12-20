@@ -16,13 +16,13 @@ Token(std::string strValue = "",std::string type = "");
 class Node
 {
     public:
-    Token t;
+    std::string t;
     std::string shape="";
     std::string subTitle="";
     Node * neighbor = nullptr; //neighbor node
     Node * childrenNode[CHILDREN];
     Node();
-    Node(Token t,std::string shape);
+    Node(std::string t,std::string shape);
     int tokenId; //Must be uniqueId
 };
 class SyntaxTree
@@ -30,14 +30,20 @@ class SyntaxTree
     public:
     Node * rootptr = nullptr; //Start point
     //Fns
-    void treeParser();
+    void treeParser(Node * root);
 
 };
 static std::vector<Token> inputTokens; 
 static int tokenCounter = 0;
 static int uniqueId = 0;
 static std::string inputParse = " \n\t\r\v,";
-static std::string outputString ="";
+static std::string outputString ="";//Body : graph main{body}
+std::string getTokenType();
+std::string getSubTitle();
+std::string addNode(long long id, std::string shape, std::string title, std::string subtitle);
+std::string addChild(long long parentId, long long childId);
+std::string addNeighbour(long long leftId, long long rightId);
+std::string addInvisibleLine(long long leftId, long long rightId);
 int genId();
 void error();
 void match(std::string token);
