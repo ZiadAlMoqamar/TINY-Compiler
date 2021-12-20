@@ -17,21 +17,21 @@ Token::Token(std::string strValue,std::string type )
     this->type = type;
 }
 void SyntaxTree::treeParser(Node * root)
-{   
+{
     if(root == nullptr)
         return;
     outputString += addNode(root->tokenId,root->shape,root->t,root->subTitle); //Creating the node itself
     for(int i = 0; i < CHILDREN; i++)
-    {   
-        Node * child = root->childrenNode[i];   
-        if(child == nullptr) 
+    {
+        Node * child = root->childrenNode[i];
+        if(child == nullptr)
             break;
         //draw children
         treeParser(child);
         outputString += addChild(root->tokenId,child->tokenId);
-        
+
         if(i>0)
-        {   
+        {
             Node * prevChild = root->childrenNode[i-1];
             if(prevChild->shape == "oval"&&child->shape == "oval" )
                 outputString += addInvisibleLine(prevChild->tokenId,child->tokenId);
@@ -75,8 +75,7 @@ std::string addInvisibleLine(long long leftId, long long rightId) {
   return funcOutput;
 }
 std::vector <Token> parseFileText(std::string file)
-{   
-
+{
     int fileLength = file.length();
     int j = 0;
     std::string temp = "";
@@ -84,14 +83,15 @@ std::vector <Token> parseFileText(std::string file)
     bool value = true;
     Token p;
     for(int i = 0; i <fileLength; ++i)
-    {
+    {   
         i = file.find_first_not_of(inputParse,j);
+        if(i == std::string::npos) break;
         if(i != std::string::npos)
         {
             j = file.find_first_of(inputParse,i);
             temp = file.substr(i,j-i);
             if(value)
-               { 
+               {
                 p.strValue = temp;
                 value = false;
                 }
@@ -104,6 +104,12 @@ std::vector <Token> parseFileText(std::string file)
             i = j;
         }
     }
+    /*for(auto i = output.begin();i !=output.end(); ++i)
+    {
+
+      std::cout<<(*i).strValue+", "+(*i).type+"\n";
+    }*/
+    
     return output;
 }
 std::string dotLang(std::vector<Token> input)
@@ -125,35 +131,37 @@ void error()
     //Add different error handling method later
 }
 void match(std::string token)
-{   
+{
     if(token == getTokenType())
-    {   
+    {
         tokenCounter++;
 
     }
     else
-    {   
+    {
         if(token !="ENDFILE")
             error();
     }
-        
+
 }
 void unmatch()
 {
     tokenCounter--;
 }
 void testParser()
-{   
+{
     std::string line;
     std::string fileText;
     std::ifstream myfile ("input.txt");
     if (myfile.is_open())
     {
     while ( getline (myfile,line) )
-    {   
+    {
         fileText+=line+"\n";
     }
-    std::cout<< dotLang(parseFileText(fileText))<<std::endl; 
+    //std::cout<<fileText<<std::endl;
+    //parseFileText(fileText);
+    std::cout<< dotLang(parseFileText(fileText))<<std::endl;
     }
     else std::cout << "Unable to open file";
 }
@@ -168,7 +176,7 @@ Node * factor()
         return t;
     }
     else if (getTokenType() == "NUMBER")
-    {   
+    {
         t->subTitle = getSubTitle();
         match("NUMBER");
         t->t = "const";
@@ -199,7 +207,7 @@ Node * term()
     while (getTokenType()  == "MULT" || getTokenType()  == "DIV" )
     {
         if(getTokenType()  == "MULT")
-        {   
+        {
             t->subTitle= getSubTitle();
             match("MULT");
             t->t = "op";
@@ -219,10 +227,10 @@ Node * term()
             t->shape = "oval";
             t->tokenId= genId();
             return t;
-            
-        }    
+
+        }
     }
-    return q;   
+    return q;
 }
 Node * simpleExp()
 {
@@ -231,7 +239,7 @@ Node * simpleExp()
     while(getTokenType() == "PLUS" || getTokenType() == "MINUS")
     {
         if(getTokenType() == "PLUS")
-        {   
+        {
             t->subTitle= getSubTitle();
             match("PLUS");
             t->t = "op";
@@ -240,10 +248,10 @@ Node * simpleExp()
             t->shape= "oval";
             t->tokenId= genId();
             return t;
-            
+
         }
         else if(getTokenType() == "MINUS")
-        {   
+        {
             t->subTitle= getSubTitle();
             match("MINUS");
             t->t = "op";
@@ -254,14 +262,14 @@ Node * simpleExp()
             return t;
         }
     }
-     return q; 
+     return q;
 }
 Node * exp()
 {   Node * t = new Node;
     Node * q = new Node;
     q =simpleExp();
     if(getTokenType()== "LESSTHAN")
-    {   
+    {
         t->subTitle= getSubTitle();
         match("LESSTHAN");
         t->t = "op";
@@ -288,7 +296,7 @@ Node * ifStmt()
 {   Node * t = new Node;
     match("IF");
     t->t = "if";
-    
+
     t->childrenNode[0] = exp();
     match("THEN");
     t->childrenNode[1] = stmtSeq();
@@ -324,11 +332,11 @@ Node * assignStmt()
     t->tokenId=genId();
     t->childrenNode[0] = exp();
     return t;
-    
+
 }
 Node * readStmt()
 {
-    Node * t = new Node; 
+    Node * t = new Node;
     match("READ");
     t->t="read";
     t->subTitle=getSubTitle();
@@ -338,16 +346,16 @@ Node * readStmt()
     return t;
 }
 Node * writeStmt()
-{   Node * t = new Node; // write node  
+{   Node * t = new Node; // write node
     match("WRITE");
     t->t="write";
-    t->shape= "rect";   
+    t->shape= "rect";
     t->tokenId= genId(); // creates ID
     t->childrenNode[0] = exp();//Write only has one child
     return t;
 }
 Node * stmt()
-{   
+{
     std::string tokenType = getTokenType();
     if(tokenType == "IF")
     {
@@ -386,4 +394,11 @@ Node *stmtSeq()
         p = q; // moves variable p to q and starts over. seems like a linked list
     }
     return t; // returns root/start node
+}
+
+int main ()
+{
+
+    testParser();
+    return 0;
 }
