@@ -20,11 +20,21 @@ void SyntaxTree::treeParser(Node * root)
 {   
     if(root == nullptr)
         return;
-
     outputString += addNode(root->tokenId,root->shape,root->t,root->subTitle); //Creating the node itself
-    if(root->childrenNode[0] != nullptr) // has children
-    {
+    for(int i = 0; i < CHILDREN; i++)
+    {   
+        Node * child = root->childrenNode[i];   
+        if(child == nullptr) 
+            break;
         //draw children
+        treeParser(child);
+        outputString += addChild(root->tokenId,child->tokenId);
+        
+        if(i>0)
+        {   
+            Node * prevChild = root->childrenNode[i-1];
+            outputString += addInvisibleLine(prevChild->tokenId,child->tokenId);
+        }
     }
     //then draw neighbors
     Node * neighbor = root->neighbor;
@@ -33,8 +43,6 @@ void SyntaxTree::treeParser(Node * root)
         treeParser(neighbor);
         outputString += addNeighbour(root->tokenId, neighbor->tokenId);
     }
-        
-    
 }
 std::string getTokenType()
 {   if(tokenCounter<inputTokens.size())
@@ -71,7 +79,7 @@ int genId()
 }
 void error()
 {
-    std::cout<<"Error:incorrect token at token no."<<tokenCounter<<"\n";
+    std::cout<<"Error:incorrect token at token no."<<tokenCounter<<" statements not accepted!\n";
     exit(EXIT_FAILURE); //Stops the entire program
     //Add different error handling method later
 }
@@ -132,7 +140,7 @@ void testParser()
             }
             inputTokens.push_back(empty);
 
-    }
+        }
     }
     else std::cout << "Unable to open file";
 }
@@ -142,16 +150,18 @@ Node * factor()
     if(getTokenType() == "OPENBRACKET")
     {
         match("OPENBRACKET");
-        t= exp();
+        t = exp();
         match("CLOSEDBRACKET");
+        return t;
     }
     else if (getTokenType() == "NUMBER")
-    {
+    {   
         t->subTitle = getSubTitle();
         match("NUMBER");
         t->t = "const";
         t->shape = "oval";
         t->tokenId = genId();
+        return t;
     }
     else if(getTokenType() == "IDENTIFIER")
     {
@@ -160,9 +170,13 @@ Node * factor()
         t->t = "id";
         t->shape = "oval";
         t->tokenId = genId();
+        return t;
     }
     else
         error();
+    t->t="failed";
+    t->tokenId=genId();
+    t->subTitle="failedS";
     return t;
 }
 Node * term()
@@ -226,8 +240,8 @@ Node * simpleExp()
             t->tokenId= genId();
             return t;
         }
-        return q;
-    }   
+    }
+     return q; 
 }
 Node * exp()
 {   Node * t = new Node;
@@ -367,12 +381,9 @@ int main()
 {
     testParser(); //Loads inputTokens
     SyntaxTree program;
-   /* if(getTokenType()!= "ENDFILE"&&getTokenType()=="READ")
-    {
-        readStmt();
-    }*/
     program.rootptr= stmtSeq(); //Start the program
     program.treeParser(program.rootptr);
-    std::cout<<outputString<<std::endl;
+    std::cout<<"graph main{"+outputString+"\n}"<<std::endl;
+
     return 0;
 }
