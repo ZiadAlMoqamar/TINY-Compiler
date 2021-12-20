@@ -33,7 +33,8 @@ void SyntaxTree::treeParser(Node * root)
         if(i>0)
         {   
             Node * prevChild = root->childrenNode[i-1];
-            outputString += addInvisibleLine(prevChild->tokenId,child->tokenId);
+            if(prevChild->shape == "oval"&&child->shape == "oval" )
+                outputString += addInvisibleLine(prevChild->tokenId,child->tokenId);
         }
     }
     //then draw neighbors
@@ -73,6 +74,46 @@ std::string addInvisibleLine(long long leftId, long long rightId) {
   funcOutput += "{rank = same;" + std::to_string(leftId) + "; " + std::to_string(rightId) + ";}" + std::to_string(leftId) + "--" + std::to_string(rightId) +"[style = invis];";
   return funcOutput;
 }
+std::vector <Token> parseFileText(std::string file)
+{   
+
+    int fileLength = file.length();
+    int j = 0;
+    std::string temp = "";
+    std::vector<Token> output;
+    bool value = true;
+    Token p;
+    for(int i = 0; i <fileLength; ++i)
+    {
+        i = file.find_first_not_of(inputParse,j);
+        if(i != std::string::npos)
+        {
+            j = file.find_first_of(inputParse,i);
+            temp = file.substr(i,j-i);
+            if(value)
+               { 
+                p.strValue = temp;
+                value = false;
+                }
+            else
+            {
+                p.type = temp;
+                output.push_back(p);
+                value = true;
+            }
+            i = j;
+        }
+    }
+    return output;
+}
+std::string dotLang(std::vector<Token> input)
+{
+    inputTokens = input;
+    SyntaxTree program;
+    program.rootptr= stmtSeq(); //Start the program
+    program.treeParser(program.rootptr);
+    return "graph main{"+outputString+"\n}";
+}
 int genId()
 {
     return uniqueId++;
@@ -91,7 +132,7 @@ void match(std::string token)
 
     }
     else
-    {   //it just works idk
+    {   
         if(token !="ENDFILE")
             error();
     }
@@ -102,45 +143,17 @@ void unmatch()
     tokenCounter--;
 }
 void testParser()
-{
+{   
     std::string line;
     std::string fileText;
     std::ifstream myfile ("input.txt");
     if (myfile.is_open())
     {
     while ( getline (myfile,line) )
-    {   int index = 0;
-        int temp = 0;
-        bool ee= true;
-        std::string value;
-        Token empty;
+    {   
         fileText+=line+"\n";
-        for(int i = 0; i<2;++i)
-            {
-                int index= line.find_first_not_of(inputParse,temp);
-                if(index !=std::string::npos)
-                {   
-                    temp = line.find_first_of(inputParse,index);
-                    value= line.substr(index,temp-index);
-                    if(ee)
-                        {
-                            empty.strValue= value;
-                            //std::cout<<"strValue:"<<value<<", ";
-                            ee = false;
-                            }
-                    else
-                        {
-                            empty.type=value;
-                           // std::cout<<"Type:"<<value<<"\n";
-                            }
-                        
-                    
-                    index = temp;
-                }
-            }
-            inputTokens.push_back(empty);
-
-        }
+    }
+    std::cout<< dotLang(parseFileText(fileText))<<std::endl; 
     }
     else std::cout << "Unable to open file";
 }
@@ -368,22 +381,9 @@ Node *stmtSeq()
     while(getTokenType()  == "SEMICOLON")
     {   Node * q;
         match("SEMICOLON");
-        //checks if the file ends since it parses statements
-        if(getTokenType() == "ENDFILE")
-            break;
         q = stmt(); // returns pointer ex if
         p->neighbor = q; //links read with  if as neighbors
         p = q; // moves variable p to q and starts over. seems like a linked list
     }
     return t; // returns root/start node
-}
-int main()
-{
-    testParser(); //Loads inputTokens
-    SyntaxTree program;
-    program.rootptr= stmtSeq(); //Start the program
-    program.treeParser(program.rootptr);
-    std::cout<<"graph main{"+outputString+"\n}"<<std::endl;
-
-    return 0;
 }

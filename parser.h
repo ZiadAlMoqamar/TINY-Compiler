@@ -1,5 +1,5 @@
-#ifndef _PARSER_H
-#define _PARSER_H
+#ifndef PARSER_H
+#define PARSER_H
 
 #define CHILDREN 3
 #include <iostream>
@@ -44,6 +44,8 @@ std::string addNode(long long id, std::string shape, std::string title, std::str
 std::string addChild(long long parentId, long long childId);
 std::string addNeighbour(long long leftId, long long rightId);
 std::string addInvisibleLine(long long leftId, long long rightId);
+std::string dotLang(std::vector<Token> input);
+std::vector <Token> parseFileText(std::string file);
 int genId();
 void error();
 void match(std::string token);
