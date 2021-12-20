@@ -7,13 +7,13 @@ Token::Token(string strValue ,string type )
 }
 string toUppercase(string str)
 {   int strLen = str.length();
-    for (int i = 0; i < strLen; ++i) 
+    for (int i = 0; i < strLen; ++i)
     {
         str[i] = toupper(str[i]);
     }
   return str;
 }
- 
+
 string idRes (string strValue)
 {
 
@@ -187,4 +187,9 @@ void testScanner()
 
     }
     else cout << "Unable to open file";
+}
+int main()
+{
+    testScanner();
+    return 0;
 }

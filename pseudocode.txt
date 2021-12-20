@@ -83,6 +83,19 @@ exp -> simple-exp [comparison-op simple-exp]
 comparison-op -> < | =
 =====================
 simple-exp -> term {addop term}
+procedure simple-exp;
+term;
+while(token == + || token == -)
+case token of:
++:
+match(+)
+term;
+-:
+match(-)
+term;
+end case
+end while
+end simple-exp
 =====================
 addop -> + | -
 =====================
