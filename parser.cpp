@@ -114,8 +114,11 @@ vector <Token> parseFileText(string file)
     return output;
 }
 string dotLang(vector<Token> input)
-{
+{   //Initializing global variables
+    tokenCounter = 0;
+    uniqueId = 0;
     inputTokens = input;
+    //Actual program
     SyntaxTree program;
     program.rootptr= stmtSeq(); //Start the program
     program.treeParser(program.rootptr);
