@@ -82,6 +82,7 @@ exp -> simple-exp [comparison-op simple-exp]
 =====================
 comparison-op -> < | =
 =====================
+a=x-y-z+1+2+3
 simple-exp -> term {addop term}
 procedure simple-exp;
 term;
