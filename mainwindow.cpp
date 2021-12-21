@@ -5,6 +5,18 @@
 #include "cdt.h"
 #include "cgraph.h"
 
+
+void writeFile(string input,string filename) {
+    ofstream out;
+    out.open(filename, ios_base::app | ios_base::out);
+    out << input << "\n";
+    out.close();
+}
+
+void createFile(string path){
+    ofstream output(path);
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -64,7 +76,8 @@ void MainWindow::on_actionSave_Token_File_triggered()
 void MainWindow::on_actionNew_triggered()
 {
     inputFieldFile.clear();
-    ui->textEdit->setPlainText(QString());
+    ui->textEdit->clear();
+    ui->textEdit->setPlainText(QString(""));
     ui->textBrowser->clear();
     ui->actionSave_Token_File->setEnabled(false);
 }
@@ -72,7 +85,7 @@ void MainWindow::on_actionNew_triggered()
 
 void MainWindow::on_actionScan_triggered()
 {
-    string scannerOutput;
+    string scannerOutput="";
     inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
     scannerOutput=Scanner(inFile.fileContent);
     inFile.isScanned=true;
@@ -80,28 +93,29 @@ void MainWindow::on_actionScan_triggered()
     ui->textBrowser->setPlainText(QScannerOutput);
     ui->actionSave_Token_File->setEnabled(inFile.isScanned);
 
-    Agraph_t* G;
-        GVC_t* gvc;
-        gvc = gvContext(); /* library function */
+   //Agraph_t* G;
+   //   GVC_t* gvc;
+    //   gvc = gvContext(); /* library function */
         vector<Token> intermediate=parseFileText(scannerOutput);
         string  dotLangst=dotLang(intermediate) ;
-        char * y= &dotLangst[0];
+        remove("DotGraph.txt");
+        writeFile(dotLangst,"DotGraph.txt");
+//      char * y= &dotLangst[0];
 
-        G = agmemread(y);
+//       G = agmemread(y);
 
 
-        gvLayout (gvc, G, "dot"); /* library function */
+//       gvLayout (gvc, G, "dot"); /* library function */
 
-        gvRenderFilename(gvc,G,"png","E:/SyntaxTree.png");
-        gvFreeLayout(gvc, G); /* library function */
-        agclose (G); /* library function */
-       gvFreeContext(gvc);
+//       gvRenderFilename(gvc,G,"png","SyntaxTree.png");
+//       gvFreeLayout(gvc, G); /* library function */
+//       agclose (G); /* library function */
+//      gvFreeContext(gvc);
 
-//       QFile file;
-//       file.setFileName("SyntaxTree.png");
-//       QDir::setCurrent("/home");
-//       file.open(QIODevice::ReadOnly);
-       system("E:/SyntaxTree.png");
+
+       system("Graphviz\\bin\\dot -Tpng DotGraph.txt -o graph.png");
+        system("graph.png");
+
 }
 
 

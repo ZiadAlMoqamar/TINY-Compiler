@@ -17,9 +17,14 @@ SOURCES += \
     scanner.cpp
 
 HEADERS += \
+    cdt.h \
+    cgraph.h \
+    gvc.h \
     mainwindow.h \
     parser.h \
-    scanner.h
+    pathplan.h \
+    scanner.h \
+    xdot.h
 
 FORMS += \
     mainwindow.ui
@@ -30,7 +35,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 
-GRAPHVIZ_PATH = "C:/Program Files/Graphviz/"
+GRAPHVIZ_PATH = "Graphviz/"
 DEFINES += WIN32_DLL
 DEFINES += GVDLL
 INCLUDEPATH += $$GRAPHVIZ_PATH/include/graphviz
