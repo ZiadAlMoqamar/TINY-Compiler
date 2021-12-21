@@ -117,6 +117,7 @@ string dotLang(vector<Token> input)
 {   //Initializing global variables
     tokenCounter = 0;
     uniqueId = 0;
+    outputString ="";
     inputTokens = input;
     //Actual program
     SyntaxTree program;
@@ -375,10 +376,3 @@ Node *stmtSeq()
     }
     return t; // returns root/start node
 }
-
-//int main ()
-//{
-
-//    testParser();
-//    return 0;
-//}
