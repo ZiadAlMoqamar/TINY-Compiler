@@ -114,8 +114,11 @@ vector <Token> parseFileText(string file)
     return output;
 }
 string dotLang(vector<Token> input)
-{
+{   //Initializing global variables
+    tokenCounter = 0;
+    uniqueId = 0;
     inputTokens = input;
+    //Actual program
     SyntaxTree program;
     program.rootptr= stmtSeq(); //Start the program
     program.treeParser(program.rootptr);
@@ -203,67 +206,43 @@ Node * factor()
 }
 Node * term()
 {
-    Node * t = new Node;
-    Node * q = factor();
-    while (getTokenType()  == "MULT" || getTokenType()  == "DIV" )
-    {
-        if(getTokenType()  == "MULT")
-        {
-            t->subTitle= getSubTitle();
-            match("MULT");
-            t->t = "op";
-            t->childrenNode[0] =q;
-            t->childrenNode[1] = factor();
-            t->shape = "oval";
-            t->tokenId= genId();
-            return t;
-        }
-        else if(getTokenType()  == "DIV")
-        {
-            t->subTitle= getSubTitle();
-            match("DIV");
-            t->t = "op";
-            t->childrenNode[0] =q;
-            t->childrenNode[1] = factor();
-            t->shape = "oval";
-            t->tokenId= genId();
-            return t;
-
-        }
+   Node * t = factor();
+    while(getTokenType() == "MULT" || getTokenType() =="DIV")
+    {  
+        Node * p = new Node;
+        p->childrenNode[0] = t;
+        p->t = "op";
+        t = p;
+        t->subTitle= getSubTitle();            
+        match(getTokenType());
+        t->childrenNode[1] = factor();
+        t->shape = "oval";
+        t->tokenId= genId();
     }
-    return q;
+     return t;
+
+   
+
 }
 Node * simpleExp()
-{
-    Node * t = new Node;
-    Node * q = term();
-    while(getTokenType() == "PLUS" || getTokenType() == "MINUS")
-    {
-        if(getTokenType() == "PLUS")
-        {
-            t->subTitle= getSubTitle();
-            match("PLUS");
-            t->t = "op";
-            t->childrenNode[0] = q;
-            t->childrenNode[1] = term();
-            t->shape= "oval";
-            t->tokenId= genId();
-            return t;
-
-        }
-        else if(getTokenType() == "MINUS")
-        {
-            t->subTitle= getSubTitle();
-            match("MINUS");
-            t->t = "op";
-            t->childrenNode[0] = q;
-            t->childrenNode[1] = term();
-            t->shape= "oval";
-            t->tokenId= genId();
-            return t;
-        }
+{   
+    Node * t = term(); 
+    while(getTokenType() == "MINUS" || getTokenType() =="PLUS")
+    {  
+        Node * p = new Node;
+        p->childrenNode[0] = t;
+        p->t = "op";
+        t = p;
+        t->subTitle= getSubTitle();            
+        match(getTokenType());
+        t->childrenNode[1] = term();
+        t->shape = "oval";
+        t->tokenId= genId();
     }
-     return q;
+     return t;
+
+   
+
 }
 Node * exp()
 {   Node * t = new Node;
