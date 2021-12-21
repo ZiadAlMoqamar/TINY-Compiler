@@ -188,8 +188,8 @@ void testScanner()
     }
     else cout << "Unable to open file";
 }
-int main()
-{
-    testScanner();
-    return 0;
-}
+//int main()
+//{
+//    testScanner();
+//    return 0;
+//}

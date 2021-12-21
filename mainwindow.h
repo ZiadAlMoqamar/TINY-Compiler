@@ -6,8 +6,8 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
-#include "scanner.h"
-
+//#include "scanner.h"
+#include "parser.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE

@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "main.cpp"
+#include "gvc.h"
+#include "cdt.h"
+#include "cgraph.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -76,6 +79,29 @@ void MainWindow::on_actionScan_triggered()
     QString QScannerOutput = QString::fromStdString(scannerOutput);
     ui->textBrowser->setPlainText(QScannerOutput);
     ui->actionSave_Token_File->setEnabled(inFile.isScanned);
+
+    Agraph_t* G;
+        GVC_t* gvc;
+        gvc = gvContext(); /* library function */
+        vector<Token> intermediate=parseFileText(scannerOutput);
+        string  dotLangst=dotLang(intermediate) ;
+        char * y= &dotLangst[0];
+
+        G = agmemread(y);
+
+
+        gvLayout (gvc, G, "dot"); /* library function */
+
+        gvRenderFilename(gvc,G,"png","E:/SyntaxTree.png");
+        gvFreeLayout(gvc, G); /* library function */
+        agclose (G); /* library function */
+       gvFreeContext(gvc);
+
+//       QFile file;
+//       file.setFileName("SyntaxTree.png");
+//       QDir::setCurrent("/home");
+//       file.open(QIODevice::ReadOnly);
+       system("E:/SyntaxTree.png");
 }
 
 

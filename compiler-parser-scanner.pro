@@ -10,13 +10,15 @@ CONFIG += c++11
 
 SOURCES += \
     inputfile.cpp \
+    inputfile.h \
     main.cpp \
     mainwindow.cpp \
+    parser.cpp \
     scanner.cpp
 
 HEADERS += \
-    inputfile.h \
     mainwindow.h \
+    parser.h \
     scanner.h
 
 FORMS += \
@@ -26,3 +28,10 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+
+GRAPHVIZ_PATH = "C:/Program Files/Graphviz/"
+DEFINES += WIN32_DLL
+DEFINES += GVDLL
+INCLUDEPATH += $$GRAPHVIZ_PATH/include/graphviz
+LIBS += -L$$GRAPHVIZ_PATH/lib -lgvc -lcgraph  -lcdt

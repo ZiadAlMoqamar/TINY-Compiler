@@ -1,4 +1,5 @@
 #include "parser.h"
+
 Node :: Node()
 {
     for(int i = 0; i < CHILDREN ; ++i)
@@ -6,16 +7,16 @@ Node :: Node()
         childrenNode[i] = nullptr; //Initialize all nodes by nullptr
     }
 }
-Node::Node(std::string t ,std::string shape)
+Node::Node(string t ,string shape)
 {
     this->t = t;
     this->shape = shape;
 }
-Token::Token(std::string strValue,std::string type )
-{
-    this->strValue = strValue;
-    this->type = type;
-}
+//Token::Token(string strValue,string type )
+//{
+//    this->strValue = strValue;
+//    this->type = type;
+//}
 void SyntaxTree::treeParser(Node * root)
 {
     if(root == nullptr)
@@ -45,48 +46,48 @@ void SyntaxTree::treeParser(Node * root)
         outputString += addNeighbour(root->tokenId, neighbor->tokenId);
     }
 }
-std::string getTokenType()
+string getTokenType()
 {   if(tokenCounter<inputTokens.size())
         return inputTokens[tokenCounter].type;
     return "ENDFILE";
 }
-std::string getSubTitle()
+string getSubTitle()
 {
     return "("+inputTokens[tokenCounter].strValue+")";
 }
-std::string addNode(long long id, std::string shape, std::string title, std::string subtitle){
-std::string funcOutput ="\n";
-funcOutput += "node[shape =" + shape + " label=\"" + title + "\\n" + subtitle + "\"] " + std::to_string(id);
+string addNode(long long id, string shape, string title, string subtitle){
+string funcOutput ="\n";
+funcOutput += "node[shape =" + shape + " label=\"" + title + "\\n" + subtitle + "\"] " + to_string(id);
 return funcOutput;
 }
-std::string addChild(long long parentId, long long childId) {
-  std::string funcOutput = "\n";
-  funcOutput += std::to_string(parentId) + "--" + std::to_string(childId);
+string addChild(long long parentId, long long childId) {
+  string funcOutput = "\n";
+  funcOutput += to_string(parentId) + "--" + to_string(childId);
   return funcOutput;
 }
-std::string addNeighbour(long long leftId, long long rightId) {
-  std::string funcOutput = "\n";
-  funcOutput += "{rank = same;"+std::to_string(leftId)+"; "+std::to_string(rightId)+";}"+ std::to_string(leftId) + "--" + std::to_string(rightId);
+string addNeighbour(long long leftId, long long rightId) {
+  string funcOutput = "\n";
+  funcOutput += "{rank = same;"+to_string(leftId)+"; "+to_string(rightId)+";}"+ to_string(leftId) + "--" + to_string(rightId);
   return funcOutput;
 }
-std::string addInvisibleLine(long long leftId, long long rightId) {
-  std::string funcOutput = "\n";
-  funcOutput += "{rank = same;" + std::to_string(leftId) + "; " + std::to_string(rightId) + ";}" + std::to_string(leftId) + "--" + std::to_string(rightId) +"[style = invis];";
+string addInvisibleLine(long long leftId, long long rightId) {
+  string funcOutput = "\n";
+  funcOutput += "{rank = same;" + to_string(leftId) + "; " + to_string(rightId) + ";}" + to_string(leftId) + "--" + to_string(rightId) +"[style = invis];";
   return funcOutput;
 }
-std::vector <Token> parseFileText(std::string file)
+vector <Token> parseFileText(string file)
 {
     int fileLength = file.length();
     int j = 0;
-    std::string temp = "";
-    std::vector<Token> output;
+    string temp = "";
+    vector<Token> output;
     bool value = true;
     Token p;
     for(int i = 0; i <fileLength; ++i)
     {   
         i = file.find_first_not_of(inputParse,j);
-        if(i == std::string::npos) break;
-        if(i != std::string::npos)
+        if(i == string::npos) break;
+        if(i != string::npos)
         {
             j = file.find_first_of(inputParse,i);
             temp = file.substr(i,j-i);
@@ -107,12 +108,12 @@ std::vector <Token> parseFileText(std::string file)
     /*for(auto i = output.begin();i !=output.end(); ++i)
     {
 
-      std::cout<<(*i).strValue+", "+(*i).type+"\n";
+      cout<<(*i).strValue+", "+(*i).type+"\n";
     }*/
     
     return output;
 }
-std::string dotLang(std::vector<Token> input)
+string dotLang(vector<Token> input)
 {
     inputTokens = input;
     SyntaxTree program;
@@ -126,11 +127,11 @@ int genId()
 }
 void error()
 {
-    std::cout<<"Error:incorrect token at token no."<<tokenCounter<<" statements not accepted!\n";
+    cout<<"Error:incorrect token at token no."<<tokenCounter<<" statements not accepted!\n";
     exit(EXIT_FAILURE); //Stops the entire program
     //Add different error handling method later
 }
-void match(std::string token)
+void match(string token)
 {
     if(token == getTokenType())
     {
@@ -150,20 +151,20 @@ void unmatch()
 }
 void testParser()
 {
-    std::string line;
-    std::string fileText;
-    std::ifstream myfile ("input.txt");
+    string line;
+    string fileText;
+    ifstream myfile ("input.txt");
     if (myfile.is_open())
     {
     while ( getline (myfile,line) )
     {
         fileText+=line+"\n";
     }
-    //std::cout<<fileText<<std::endl;
+    //cout<<fileText<<endl;
     //parseFileText(fileText);
-    std::cout<< dotLang(parseFileText(fileText))<<std::endl;
+    cout<< dotLang(parseFileText(fileText))<<endl;
     }
-    else std::cout << "Unable to open file";
+    else cout << "Unable to open file";
 }
 Node * factor()
 {
@@ -356,7 +357,7 @@ Node * writeStmt()
 }
 Node * stmt()
 {
-    std::string tokenType = getTokenType();
+    string tokenType = getTokenType();
     if(tokenType == "IF")
     {
        return ifStmt();
@@ -396,9 +397,9 @@ Node *stmtSeq()
     return t; // returns root/start node
 }
 
-int main ()
-{
+//int main ()
+//{
 
-    testParser();
-    return 0;
-}
+//    testParser();
+//    return 0;
+//}

@@ -6,23 +6,25 @@
 #include <vector>
 #include <string>
 #include <fstream>
-class Token
-{
-public:
-std::string strValue = "";
-std::string type ="";
-Token(std::string strValue = "",std::string type = "");
-};
+#include "scanner.h"
+using namespace std;
+//class Token
+//{
+//public:
+//string strValue = "";
+//string type ="";
+//Token(string strValue = "",string type = "");
+//};
 class Node
 {
     public:
-    std::string t;
-    std::string shape="";
-    std::string subTitle="";
+    string t;
+    string shape="";
+    string subTitle="";
     Node * neighbor = nullptr; //neighbor node
     Node * childrenNode[CHILDREN];
     Node();
-    Node(std::string t,std::string shape);
+    Node(string t,string shape);
     int tokenId; //Must be uniqueId
 };
 class SyntaxTree
@@ -33,22 +35,22 @@ class SyntaxTree
     void treeParser(Node * root);
 
 };
-static std::vector<Token> inputTokens; 
+static vector<Token> inputTokens; 
 static int tokenCounter = 0;
 static int uniqueId = 0;
-static std::string inputParse = " \n\t\r\v,";
-static std::string outputString ="";//Body : graph main{body}
-std::string getTokenType();
-std::string getSubTitle();
-std::string addNode(long long id, std::string shape, std::string title, std::string subtitle);
-std::string addChild(long long parentId, long long childId);
-std::string addNeighbour(long long leftId, long long rightId);
-std::string addInvisibleLine(long long leftId, long long rightId);
-std::string dotLang(std::vector<Token> input);
-std::vector <Token> parseFileText(std::string file);
+static string inputParse = " \n\t\r\v,";
+static string outputString ="";//Body : graph main{body}
+string getTokenType();
+string getSubTitle();
+string addNode(long long id, string shape, string title, string subtitle);
+string addChild(long long parentId, long long childId);
+string addNeighbour(long long leftId, long long rightId);
+string addInvisibleLine(long long leftId, long long rightId);
+string dotLang(vector<Token> input);
+vector <Token> parseFileText(string file);
 int genId();
 void error();
-void match(std::string token);
+void match(string token);
 void unmatch();
 
 //Node *  program();
