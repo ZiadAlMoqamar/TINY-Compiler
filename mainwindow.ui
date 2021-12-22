@@ -150,8 +150,11 @@ p, li { white-space: pre-wrap; }
      <string>File</string>
     </property>
     <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="separator"/>
     <addaction name="actionScan"/>
     <addaction name="actionParse"/>
+    <addaction name="separator"/>
     <addaction name="actionSave_Token_File"/>
    </widget>
    <addaction name="menuFile"/>
