@@ -6,10 +6,12 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
-#include <QGraphicsPixmapItem>
+#include <QGraphicsSvgItem>
+#include <QProcess>
 #include <QGraphicsView>
 #include "math.h"
 #include "parser.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE

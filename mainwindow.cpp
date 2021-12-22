@@ -13,6 +13,7 @@ void writeFile(string input,string filename) {
     out.close();
 }
 
+
 void createFile(string path){
     ofstream output(path);
 }
@@ -158,16 +159,26 @@ void MainWindow::on_actionParse_triggered()
  //       agclose (G); /* library function */
  //      gvFreeContext(gvc);
 
-
-        system("Graphviz\\bin\\dot -Tsvg DotGraph.txt -o graph.svg");
+    QProcess process;
+    process.start("Graphviz\\bin\\dot",QStringList()<<"-Tsvg"<< "DotGraph.txt"<< "-o"<<"graph.svg");
+    process.waitForFinished();
+        //system("Graphviz\\bin\\dot -Tsvg DotGraph.txt -o graph.svg");
          //system("graph.svg");
 
+        if(ui->checkBox->isChecked()){
+            process.start("Graphviz\\bin\\dot",QStringList()<<"-Tpng"<< "DotGraph.txt"<< "-o"<<"graph.png");
+            process.waitForFinished();
+            process.start("graph.png");
+            process.waitForFinished();
+            //system("Graphviz\\bin\\dot -Tpng DotGraph.txt -o graph.png");
+             system("graph.png");
+        }
         QImage img("graph.svg");
                 bool valid = img.load(QString::fromStdString("graph.svg"));
                 if (valid) {
                     QGraphicsScene* scene = new QGraphicsScene();
-                    ui->graphicsView->setScene(scene);
-                    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(img));
+                    ui->graphicsView->setScene(scene);             
+                    QGraphicsSvgItem * item = new QGraphicsSvgItem("graph.svg");
                     scene->addItem(item);
                     //slider = true;
                     //ui->tabWidget->setCurrentIndex(2);
@@ -185,12 +196,20 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
             if (valid) {
                 QGraphicsScene* scene = new QGraphicsScene();
                 ui->graphicsView->setScene(scene);
-                QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(img));
-                const double exp = value * 0.01;
-                const double scl = pow(10.0, exp);
-                item->setTransform(QTransform().scale(scl, scl));
-                scene->addItem(item);
-            }
+                QGraphicsSvgItem * item = new QGraphicsSvgItem("graph.svg");
+            const double exp = value * 0.01;
+             const double scl = pow(10.0, exp);
+               item->setTransform(QTransform().scale(scl, scl));
+               scene->addItem(item);
+                 }
+              //  qreal scaleFactor =  scl /240;
+
+             //   qreal factor = ui->graphicsView->transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
+
+            //  if (0.05 < factor && factor < 10)
+
+                 //   ui->graphicsView->scale(scaleFactor, scaleFactor);
+
 
 }
 
