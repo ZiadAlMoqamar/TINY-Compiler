@@ -37,6 +37,10 @@ private slots:
 
     void on_horizontalSlider_valueChanged(int value);
 
+    void on_radioButton2_clicked();
+
+    void on_radioButton1_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString inputFieldFile = "";

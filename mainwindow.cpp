@@ -83,6 +83,7 @@ void MainWindow::on_actionNew_triggered()
     //ui->graphicsView->items().clear();
     QGraphicsScene* scene = new QGraphicsScene();
     ui->graphicsView->setScene(scene);
+    ui->horizontalSlider->setEnabled(false);
 }
 
 
@@ -95,9 +96,10 @@ void MainWindow::on_actionScan_triggered()
     QString QScannerOutput = QString::fromStdString(scannerOutput);
     ui->textBrowser->setPlainText(QScannerOutput);
     ui->actionSave_Token_File->setEnabled(inFile.isScanned);
-
-
-
+    //claering graphicsView
+    QGraphicsScene* scene = new QGraphicsScene();
+    ui->graphicsView->setScene(scene);
+    ui->horizontalSlider->setEnabled(false);
 }
 
 
@@ -108,7 +110,9 @@ void MainWindow::on_textEdit_textChanged()
         ui->actionParse->setEnabled(false);
     }
     else{
+        if(!ui->radioButton2->isChecked()){
         ui->actionScan->setEnabled(true);
+        }
         ui->actionParse->setEnabled(true);
     }
 }
@@ -117,13 +121,24 @@ void MainWindow::on_textEdit_textChanged()
 void MainWindow::on_actionParse_triggered()
 {
     string scannerOutput="";
+    vector<Token> intermediate;
+    if(ui->radioButton1->isChecked()){
     inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
     scannerOutput=Scanner(inFile.fileContent);
     inFile.isScanned=true;
     QString QScannerOutput = QString::fromStdString(scannerOutput);
     ui->textBrowser->setPlainText(QScannerOutput);
     ui->actionSave_Token_File->setEnabled(inFile.isScanned);
-    vector<Token> intermediate=parseFileText(scannerOutput);
+    intermediate=parseFileText(scannerOutput);
+    }
+    if(ui->radioButton2->isChecked()){
+        string tokenTablestr = (ui->textEdit->toPlainText()).toStdString();
+        inFile.isScanned=true;
+        QString QScannerOutput = QString::fromStdString(scannerOutput);
+        ui->textBrowser->setPlainText(QScannerOutput);
+       // ui->actionSave_Token_File->setEnabled(inFile.isScanned);
+        intermediate=parseFileText(tokenTablestr);
+    }
     string  dotLangst=dotLang(intermediate) ;
     remove("DotGraph.txt");
     writeFile(dotLangst,"DotGraph.txt");
@@ -156,6 +171,7 @@ void MainWindow::on_actionParse_triggered()
                     scene->addItem(item);
                     //slider = true;
                     //ui->tabWidget->setCurrentIndex(2);
+                    ui->horizontalSlider->setEnabled(true);
                 }
 
 }
@@ -176,5 +192,22 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
                 scene->addItem(item);
             }
 
+}
+
+
+void MainWindow::on_radioButton2_clicked()
+{
+    if(ui->radioButton2->isChecked()){
+    ui->actionScan->setEnabled(false);
+    }
+    else{
+        ui->actionScan->setEnabled(true);
+    }
+}
+
+
+void MainWindow::on_radioButton1_clicked()
+{
+    on_textEdit_textChanged();
 }
 
