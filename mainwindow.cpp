@@ -80,6 +80,9 @@ void MainWindow::on_actionNew_triggered()
     ui->textEdit->setPlainText(QString(""));
     ui->textBrowser->clear();
     ui->actionSave_Token_File->setEnabled(false);
+    //ui->graphicsView->items().clear();
+    QGraphicsScene* scene = new QGraphicsScene();
+    ui->graphicsView->setScene(scene);
 }
 
 
@@ -93,28 +96,7 @@ void MainWindow::on_actionScan_triggered()
     ui->textBrowser->setPlainText(QScannerOutput);
     ui->actionSave_Token_File->setEnabled(inFile.isScanned);
 
-   //Agraph_t* G;
-   //   GVC_t* gvc;
-    //   gvc = gvContext(); /* library function */
-        vector<Token> intermediate=parseFileText(scannerOutput);
-        string  dotLangst=dotLang(intermediate) ;
-        remove("DotGraph.txt");
-        writeFile(dotLangst,"DotGraph.txt");
-//      char * y= &dotLangst[0];
 
-//       G = agmemread(y);
-
-
-//       gvLayout (gvc, G, "dot"); /* library function */
-
-//       gvRenderFilename(gvc,G,"png","SyntaxTree.png");
-//       gvFreeLayout(gvc, G); /* library function */
-//       agclose (G); /* library function */
-//      gvFreeContext(gvc);
-
-
-       system("Graphviz\\bin\\dot -Tpng DotGraph.txt -o graph.png");
-        system("graph.png");
 
 }
 
@@ -123,9 +105,76 @@ void MainWindow::on_textEdit_textChanged()
 {
     if(ui->textEdit->toPlainText()==""){
         ui->actionScan->setEnabled(false);
+        ui->actionParse->setEnabled(false);
     }
     else{
         ui->actionScan->setEnabled(true);
+        ui->actionParse->setEnabled(true);
     }
+}
+
+
+void MainWindow::on_actionParse_triggered()
+{
+    string scannerOutput="";
+    inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    scannerOutput=Scanner(inFile.fileContent);
+    inFile.isScanned=true;
+    QString QScannerOutput = QString::fromStdString(scannerOutput);
+    ui->textBrowser->setPlainText(QScannerOutput);
+    ui->actionSave_Token_File->setEnabled(inFile.isScanned);
+    vector<Token> intermediate=parseFileText(scannerOutput);
+    string  dotLangst=dotLang(intermediate) ;
+    remove("DotGraph.txt");
+    writeFile(dotLangst,"DotGraph.txt");
+    //Agraph_t* G;
+    //   GVC_t* gvc;
+     //   gvc = gvContext(); /* library function */
+
+ //      char * y= &dotLangst[0];
+
+ //       G = agmemread(y);
+
+
+ //       gvLayout (gvc, G, "dot"); /* library function */
+
+ //       gvRenderFilename(gvc,G,"png","SyntaxTree.png");
+ //       gvFreeLayout(gvc, G); /* library function */
+ //       agclose (G); /* library function */
+ //      gvFreeContext(gvc);
+
+
+        system("Graphviz\\bin\\dot -Tsvg DotGraph.txt -o graph.svg");
+         //system("graph.svg");
+
+        QImage img("graph.svg");
+                bool valid = img.load(QString::fromStdString("graph.svg"));
+                if (valid) {
+                    QGraphicsScene* scene = new QGraphicsScene();
+                    ui->graphicsView->setScene(scene);
+                    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(img));
+                    scene->addItem(item);
+                    //slider = true;
+                    //ui->tabWidget->setCurrentIndex(2);
+                }
+
+}
+
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+
+            QImage img("graph.svg");
+            bool valid = img.load(QString::fromStdString("graph.svg"));
+            if (valid) {
+                QGraphicsScene* scene = new QGraphicsScene();
+                ui->graphicsView->setScene(scene);
+                QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(img));
+                const double exp = value * 0.01;
+                const double scl = pow(10.0, exp);
+                item->setTransform(QTransform().scale(scl, scl));
+                scene->addItem(item);
+            }
+
 }
 

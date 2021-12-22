@@ -6,7 +6,9 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
-//#include "scanner.h"
+#include <QGraphicsPixmapItem>
+#include <QGraphicsView>
+#include "math.h"
 #include "parser.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,6 +32,10 @@ private slots:
     void on_actionScan_triggered();
 
     void on_textEdit_textChanged();
+
+    void on_actionParse_triggered();
+
+    void on_horizontalSlider_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;

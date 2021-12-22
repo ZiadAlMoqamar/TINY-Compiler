@@ -29,22 +29,6 @@
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="1">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Token Table</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QTextBrowser" name="textBrowser">
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
@@ -52,7 +36,24 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" rowspan="2">
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Syntax Tree</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="QGraphicsView" name="graphicsView"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Token Table</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
         <widget class="QTextEdit" name="textEdit">
          <property name="font">
           <font>
@@ -68,7 +69,32 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
+       <item row="1" column="1">
+        <widget class="QTextBrowser" name="textBrowser">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QSlider" name="horizontalSlider">
+       <property name="minimum">
+        <number>-100</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="pageStep">
+        <number>1</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -89,6 +115,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionScan"/>
+    <addaction name="actionParse"/>
     <addaction name="actionSave_Token_File"/>
    </widget>
    <addaction name="menuFile"/>
@@ -106,6 +133,7 @@ p, li { white-space: pre-wrap; }
    </attribute>
    <addaction name="actionNew"/>
    <addaction name="actionScan"/>
+   <addaction name="actionParse"/>
   </widget>
   <action name="actionNew">
    <property name="text">
@@ -131,6 +159,14 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Save Token File</string>
+   </property>
+  </action>
+  <action name="actionParse">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Parse</string>
    </property>
   </action>
  </widget>
