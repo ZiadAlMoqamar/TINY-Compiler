@@ -140,50 +140,44 @@ void MainWindow::on_actionParse_triggered()
        // ui->actionSave_Token_File->setEnabled(inFile.isScanned);
         intermediate=parseFileText(tokenTablestr);
     }
-    string  dotLangst=dotLang(intermediate) ;
-    remove("DotGraph.txt");
-    writeFile(dotLangst,"DotGraph.txt");
-    //Agraph_t* G;
-    //   GVC_t* gvc;
-     //   gvc = gvContext(); /* library function */
-
- //      char * y= &dotLangst[0];
-
- //       G = agmemread(y);
+    string  dotLangst ="";
+    try {
+         dotLangst=dotLang(intermediate) ;
+         remove("DotGraph.txt");
+        // if(errorHandler()=="NOERROR")
+         writeFile(dotLangst,"DotGraph.txt");
 
 
- //       gvLayout (gvc, G, "dot"); /* library function */
+         QProcess process;
+         process.start("Graphviz\\bin\\dot",QStringList()<<"-Tsvg"<< "DotGraph.txt"<< "-o"<<"graph.svg");
+         process.waitForFinished();
+             //system("Graphviz\\bin\\dot -Tsvg DotGraph.txt -o graph.svg");
+              //system("graph.svg");
 
- //       gvRenderFilename(gvc,G,"png","SyntaxTree.png");
- //       gvFreeLayout(gvc, G); /* library function */
- //       agclose (G); /* library function */
- //      gvFreeContext(gvc);
+             if(ui->checkBox->isChecked()){
+                 process.start("Graphviz\\bin\\dot",QStringList()<<"-Tpng"<< "DotGraph.txt"<< "-o"<<"graph.png");
+                 process.waitForFinished();
+                 process.start("graph.png");
+                 process.waitForFinished();
+                 //system("Graphviz\\bin\\dot -Tpng DotGraph.txt -o graph.png");
+                  system("graph.png");
+             }
+             QImage img("graph.svg");
+                     bool valid = img.load(QString::fromStdString("graph.svg"));
+                     if (valid) {
+                         QGraphicsScene* scene = new QGraphicsScene();
+                         ui->graphicsView->setScene(scene);
+                         QGraphicsSvgItem * item = new QGraphicsSvgItem("graph.svg");
+                         scene->addItem(item);
+                         //slider = true;
+                         //ui->tabWidget->setCurrentIndex(2);
+                         ui->horizontalSlider->setEnabled(true);
+                     }
 
-    QProcess process;
-    process.start("Graphviz\\bin\\dot",QStringList()<<"-Tsvg"<< "DotGraph.txt"<< "-o"<<"graph.svg");
-    process.waitForFinished();
-        //system("Graphviz\\bin\\dot -Tsvg DotGraph.txt -o graph.svg");
-         //system("graph.svg");
+    }  catch (const char * err) {
+       QMessageBox::information(this,"Error Found",err);
+    }
 
-        if(ui->checkBox->isChecked()){
-            process.start("Graphviz\\bin\\dot",QStringList()<<"-Tpng"<< "DotGraph.txt"<< "-o"<<"graph.png");
-            process.waitForFinished();
-            process.start("graph.png");
-            process.waitForFinished();
-            //system("Graphviz\\bin\\dot -Tpng DotGraph.txt -o graph.png");
-             system("graph.png");
-        }
-        QImage img("graph.svg");
-                bool valid = img.load(QString::fromStdString("graph.svg"));
-                if (valid) {
-                    QGraphicsScene* scene = new QGraphicsScene();
-                    ui->graphicsView->setScene(scene);             
-                    QGraphicsSvgItem * item = new QGraphicsSvgItem("graph.svg");
-                    scene->addItem(item);
-                    //slider = true;
-                    //ui->tabWidget->setCurrentIndex(2);
-                    ui->horizontalSlider->setEnabled(true);
-                }
 
 }
 
