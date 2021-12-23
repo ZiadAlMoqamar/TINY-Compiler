@@ -43,7 +43,7 @@ static string outputString ="";//Body : graph main{body}
 string getTokenType();
 string getSubTitle();
 string addNode(long long id, string shape, string title, string subtitle);
-string addChild(long long parentId, long long childId);
+string addChild(long long parentId, long long childId,string dashed);
 string addNeighbour(long long leftId, long long rightId);
 string addInvisibleLine(long long leftId, long long rightId);
 string dotLang(vector<Token> input);

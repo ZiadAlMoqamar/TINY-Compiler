@@ -29,13 +29,49 @@ void SyntaxTree::treeParser(Node * root)
             break;
         //draw children
         treeParser(child);
-        outputString += addChild(root->tokenId,child->tokenId);
+        string dashed ="";
+        //Else case
+        if(i == 2)
+        {
+        dashed = "[style = \"dashed\"]";
+        }
+        outputString += addChild(root->tokenId,child->tokenId,dashed);
 
         if(i>0)
-        {
-            Node * prevChild = root->childrenNode[i-1];
-            if(prevChild->shape == "oval"&&child->shape == "oval" )
+        {   Node * prevChild = root->childrenNode[i-1];
+        //Link expressions with statements or expressions
+           if(prevChild->shape == "oval")
+            {
                 outputString += addInvisibleLine(prevChild->tokenId,child->tokenId);
+            }
+            //Repeat case:
+            else if(child->shape == "oval" && prevChild->shape == "rect")
+            {
+                 Node * lastNeighbor = prevChild; //Prevchild
+                while(true)
+                {   //Loop until the node with no neighbors
+                    //if there's none break
+                    if(lastNeighbor->neighbor == nullptr)
+                        break;
+                    lastNeighbor = lastNeighbor->neighbor;
+                }
+
+                    outputString += addInvisibleLine(lastNeighbor->tokenId, child->tokenId);
+            }
+            //Only comes here for if else case
+            else if(i == 2) //last child (ELSE)
+            {
+                Node * lastNeighbor = prevChild; //Prevchild
+                while(true)
+                {   //Loop until the node with no neighbors
+                    //if there's none break
+                    if(lastNeighbor->neighbor == nullptr)
+                        break;
+                    lastNeighbor = lastNeighbor->neighbor;
+                }
+
+                    outputString += addInvisibleLine(lastNeighbor->tokenId, child->tokenId);
+            }
         }
     }
     //then draw neighbors
@@ -60,9 +96,10 @@ string funcOutput ="\n";
 funcOutput += "node[shape =" + shape + " label=\"" + title + "\\n" + subtitle + "\"] " + to_string(id);
 return funcOutput;
 }
-string addChild(long long parentId, long long childId) {
+string addChild(long long parentId, long long childId,string dashed) {
   string funcOutput = "\n";
-  funcOutput += to_string(parentId) + "--" + to_string(childId);
+  funcOutput += to_string(parentId) + "--" + to_string(childId)+dashed;
+
   return funcOutput;
 }
 string addNeighbour(long long leftId, long long rightId) {
