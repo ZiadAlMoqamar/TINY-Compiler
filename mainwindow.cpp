@@ -175,7 +175,12 @@ void MainWindow::on_actionParse_triggered()
                      }
 
     }  catch (const char * err) {
-       QMessageBox::information(this,"Error Found",err);
+        QString x= QString::fromStdString(to_string(tokenCounter)) ;
+        QGraphicsScene* scene = new QGraphicsScene();
+        ui->graphicsView->setScene(scene);
+        ui->horizontalSlider->setEnabled(false);
+       QMessageBox::information(this,"Error Found ",err+x);
+
     }
 
 
