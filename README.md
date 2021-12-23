@@ -5,14 +5,6 @@
 A parser is a compiler/interpreter component which is responsible for producing parser tree or abstract syntax tree.
 In this repo, my goal is to write a Tiny Parser using a predictive top-down parsing technique — recursive descent technique.
 
-## To-dos
-
-- [x] convert grammar rules to the EBNF notation.
-- [ ] create boilerplate parser.
-- [ ] write helpful classes and functions: trees,match,computational fns,...etc.
-- [ ] implement the parser.
-- [ ] implement errors.
-
 ### Grammar rules in EBNF
 
 - program -> stmt-seq
@@ -33,7 +25,8 @@ In this repo, my goal is to write a Tiny Parser using a predictive top-down pars
 
 ### Notes
 
-- statement has neighor nodes and child nodes
-- statement is rectangle
-- operation is binary tree
-- operation is ellipse
+- statement has neighbors and child nodes which could be statements
+- expressions are depicted as oval and statements are depicted as rectangle
+- max number of children for a statement is 3 children -- for an if statement
+- max number of children for an expression is 2
+- 

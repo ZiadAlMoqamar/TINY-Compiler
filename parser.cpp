@@ -12,11 +12,11 @@ Node::Node(string t ,string shape)
     this->t = t;
     this->shape = shape;
 }
-//Token::Token(string strValue,string type )
-//{
-//    this->strValue = strValue;
-//    this->type = type;
-//}
+/*Token::Token(string strValue,string type )
+{
+    this->strValue = strValue;
+    this->type = type;
+}*/
 void SyntaxTree::treeParser(Node * root)
 {
     if(root == nullptr)
@@ -121,7 +121,7 @@ vector <Token> parseFileText(string file)
     bool value = true;
     Token p;
     for(int i = 0; i <fileLength; ++i)
-    {   
+    {
         i = file.find_first_not_of(inputParse,j);
         if(i == string::npos) break;
         if(i != string::npos)
@@ -147,11 +147,12 @@ vector <Token> parseFileText(string file)
 
       cout<<(*i).strValue+", "+(*i).type+"\n";
     }*/
-    
+
     return output;
 }
 string dotLang(vector<Token> input)
-{   //Initializing global variables
+{   
+    //Initializing global variables
     tokenCounter = 0;
     uniqueId = 0;
     outputString ="";
@@ -159,17 +160,21 @@ string dotLang(vector<Token> input)
     //Actual program
     SyntaxTree program;
     program.rootptr= stmtSeq(); //Start the program
+   
+
     program.treeParser(program.rootptr);
     return "graph main{"+outputString+"\n}";
+    
 }
 int genId()
 {
     return uniqueId++;
 }
 void error()
-{
-    cout<<"Error:incorrect token at token no."<<tokenCounter<<" statements not accepted!\n";
-    exit(EXIT_FAILURE); //Stops the entire program
+{  
+    throw "Error:incorrect token at token no.";
+    
+    //cout<<"Error:incorrect token at token no."<<tokenCounter<<" statements not accepted!\n";
     //Add different error handling method later
 }
 void match(string token)
@@ -180,7 +185,7 @@ void match(string token)
 
     }
     else
-    {
+    {   
         if(token !="ENDFILE")
             error();
     }
@@ -191,7 +196,8 @@ void unmatch()
     tokenCounter--;
 }
 void testParser()
-{
+{   
+   
     string line;
     string fileText;
     ifstream myfile ("input.txt");
@@ -206,6 +212,7 @@ void testParser()
     cout<< dotLang(parseFileText(fileText))<<endl;
     }
     else cout << "Unable to open file";
+    
 }
 Node * factor()
 {
@@ -246,12 +253,12 @@ Node * term()
 {
    Node * t = factor();
     while(getTokenType() == "MULT" || getTokenType() =="DIV")
-    {  
+    {
         Node * p = new Node;
         p->childrenNode[0] = t;
         p->t = "op";
         t = p;
-        t->subTitle= getSubTitle();            
+        t->subTitle= getSubTitle();
         match(getTokenType());
         t->childrenNode[1] = factor();
         t->shape = "oval";
@@ -259,19 +266,19 @@ Node * term()
     }
      return t;
 
-   
+
 
 }
 Node * simpleExp()
-{   
-    Node * t = term(); 
+{
+    Node * t = term();
     while(getTokenType() == "MINUS" || getTokenType() =="PLUS")
-    {  
+    {
         Node * p = new Node;
         p->childrenNode[0] = t;
         p->t = "op";
         t = p;
-        t->subTitle= getSubTitle();            
+        t->subTitle= getSubTitle();
         match(getTokenType());
         t->childrenNode[1] = term();
         t->shape = "oval";
@@ -279,7 +286,7 @@ Node * simpleExp()
     }
      return t;
 
-   
+
 
 }
 Node * exp()

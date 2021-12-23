@@ -8,13 +8,15 @@
 #include <fstream>
 #include "scanner.h"
 using namespace std;
-//class Token
-//{
-//public:
-//string strValue = "";
-//string type ="";
-//Token(string strValue = "",string type = "");
-//};
+
+/*class Token
+{
+public:
+string strValue = "";
+string type ="";
+Token(string strValue = "",string type = "");
+};
+*/
 class Node
 {
     public:
@@ -35,7 +37,7 @@ class SyntaxTree
     void treeParser(Node * root);
 
 };
-static vector<Token> inputTokens; 
+static vector<Token> inputTokens;
 static int tokenCounter = 0;
 static int uniqueId = 0;
 static string inputParse = " \n\t\r\v,";
