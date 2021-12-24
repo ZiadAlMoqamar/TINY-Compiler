@@ -30,7 +30,13 @@ void SyntaxTree::treeParser(Node * root)
     {
         Node * child = root->childrenNode[i];
         if(child == nullptr)
+        {   //when done with children release their pointers here
+            for(auto p: root->childrenNode)
+            {
+                delete p;
+            }
             break;
+        }
         //draw children
         treeParser(child);
         string dashed ="";
@@ -85,6 +91,8 @@ void SyntaxTree::treeParser(Node * root)
         treeParser(neighbor);
         outputString += addNeighbour(root->tokenId, neighbor->tokenId);
     }
+    //clears all statements pointers
+    delete root;
 }
 string getTokenType()
 {   if(tokenCounter<inputTokens.size())
