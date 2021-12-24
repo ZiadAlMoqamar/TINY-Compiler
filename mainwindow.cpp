@@ -157,8 +157,8 @@ void MainWindow::on_actionParse_triggered()
              if(ui->checkBox->isChecked()){
                  process.start("Graphviz\\bin\\dot",QStringList()<<"-Tpng"<< "DotGraph.txt"<< "-o"<<"graph.png");
                  process.waitForFinished();
-                 process.start("graph.png");
-                 process.waitForFinished();
+//                 process.start("graph.png");
+//                 process.waitForFinished();
                  //system("Graphviz\\bin\\dot -Tpng DotGraph.txt -o graph.png");
                   system("graph.png");
              }
