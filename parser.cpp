@@ -31,10 +31,6 @@ void SyntaxTree::treeParser(Node * root)
         Node * child = root->childrenNode[i];
         if(child == nullptr)
         {   //when done with children release their pointers here
-            for(auto p: root->childrenNode)
-            {
-                delete p;
-            }
             break;
         }
         //draw children
@@ -92,7 +88,7 @@ void SyntaxTree::treeParser(Node * root)
         outputString += addNeighbour(root->tokenId, neighbor->tokenId);
     }
     //clears all statements pointers
-    delete root;
+
 }
 string getTokenType()
 {   if(tokenCounter<inputTokens.size())
@@ -163,22 +159,26 @@ vector <Token> parseFileText(string file)
     return output;
 }
 string dotLang(vector<Token> input)
-{   
+{
     //Initializing global variables
     tokenCounter = 0;
     uniqueId = 0;
     outputString ="";
     inputTokens = input;
     //Actual program
-    SyntaxTree program;
-    program.rootptr= stmtSeq(); //Start the program
-    if(getTokenType() != "ENDFILE")
+    if(!inputTokens.empty())
     {
-        error();
+        SyntaxTree program;
+        program.rootptr= stmtSeq(); //Start the program
+        if(getTokenType() != "ENDFILE")
+        {
+            error();
+        }
+        program.treeParser(program.rootptr);
+
     }
-    program.treeParser(program.rootptr);
-    return "graph main{"+outputString+"\n}";
-    
+      return "graph main{"+outputString+"\n}";
+
 }
 int genId()
 {
