@@ -19,7 +19,7 @@ Token(string strValue = "",string type = "");
 */
 class myException{
 public:
-    int errNo = 1;
+    int errNo;
     string errTxt;
     myException(int x);
 

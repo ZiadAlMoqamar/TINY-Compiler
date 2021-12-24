@@ -103,19 +103,13 @@ string Scanner(string TinyFileText)
                     break;
                     case 2:
 
-                    while(TinyFileText[index] != '}' && index < length)
+                    while(TinyFileText[index] != '}')
                         {
 
                             index++;
 
                         }
-
-                    if(TinyFileText[index] == '}'){
-                    index =index+1;}
-                   else{
-                    Token temp("{","error");
-                    tokenList.push_back(temp);
-                }
+                        index++;
                         state=1;
                     break;
                     case 3:
