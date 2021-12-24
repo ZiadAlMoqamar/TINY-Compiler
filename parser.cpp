@@ -7,6 +7,10 @@ Node :: Node()
         childrenNode[i] = nullptr; //Initialize all nodes by nullptr
     }
 }
+myException::myException(int x){
+    errNo=x + 1;
+    errTxt = "Error: incorrect token at token number: "+to_string(errNo);
+}
 Node::Node(string t ,string shape)
 {
     this->t = t;
@@ -160,8 +164,10 @@ string dotLang(vector<Token> input)
     //Actual program
     SyntaxTree program;
     program.rootptr= stmtSeq(); //Start the program
-   
-
+    if(getTokenType() != "ENDFILE")
+    {
+        error();
+    }
     program.treeParser(program.rootptr);
     return "graph main{"+outputString+"\n}";
     
@@ -172,7 +178,7 @@ int genId()
 }
 void error()
 {  
-    throw "Error:incorrect token at token no.";
+    throw myException(tokenCounter);
     
     //cout<<"Error:incorrect token at token no."<<tokenCounter<<" statements not accepted!\n";
     //Add different error handling method later
