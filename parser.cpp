@@ -93,7 +93,10 @@ string getTokenType()
 }
 string getSubTitle()
 {
-    return "("+inputTokens[tokenCounter].strValue+")";
+     if(tokenCounter<inputTokens.size())
+        return "("+inputTokens[tokenCounter].strValue+")";
+     return "";
+
 }
 string addNode(long long id, string shape, string title, string subtitle){
 string funcOutput ="\n";
