@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("TINY Compiler");
     ui->textEdit->setLineWrapMode(QTextEdit::LineWrapMode(0));
     ui->textBrowser->setLineWrapMode(QTextEdit::LineWrapMode(0));
-
+    ui->ParserOutputStateLabel->setHidden(true);
 }
 
 MainWindow::~MainWindow()
@@ -38,6 +38,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionOpen_triggered()
 {
+    ui->ParserOutputStateLabel->setHidden(true);
     QString fileName = QFileDialog::getOpenFileName(this, "Open File");
       QFile file(fileName);
       inputFieldFile = fileName;
@@ -85,11 +86,13 @@ void MainWindow::on_actionNew_triggered()
     QGraphicsScene* scene = new QGraphicsScene();
     ui->graphicsView->setScene(scene);
     ui->horizontalSlider->setEnabled(false);
+    ui->ParserOutputStateLabel->setHidden(true);
 }
 
 
 void MainWindow::on_actionScan_triggered()
 {
+    ui->ParserOutputStateLabel->setHidden(true);
     string scannerOutput="";
     inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
     scannerOutput=Scanner(inFile.fileContent);
@@ -171,10 +174,20 @@ void MainWindow::on_actionParse_triggered()
                          scene->addItem(item);
                          //slider = true;
                          //ui->tabWidget->setCurrentIndex(2);
+
                          ui->horizontalSlider->setEnabled(true);
                      }
-
+                     ui->ParserOutputStateLabel->setText("Valid Input");
+                     QPalette palette = ui->ParserOutputStateLabel->palette();
+                     palette.setColor(ui->ParserOutputStateLabel->foregroundRole(), Qt::darkGreen);
+                     ui->ParserOutputStateLabel->setPalette(palette);
+                ui->ParserOutputStateLabel->setHidden(false);
     }  catch (myException& err) {
+        ui->ParserOutputStateLabel->setText("Invalid Input");
+        QPalette palette = ui->ParserOutputStateLabel->palette();
+        palette.setColor(ui->ParserOutputStateLabel->foregroundRole(), Qt::red);
+        ui->ParserOutputStateLabel->setPalette(palette);
+        ui->ParserOutputStateLabel->setHidden(false);
         QString errorTxt= QString::fromStdString(err.errTxt) ;
         QGraphicsScene* scene = new QGraphicsScene();
         ui->graphicsView->setScene(scene);
