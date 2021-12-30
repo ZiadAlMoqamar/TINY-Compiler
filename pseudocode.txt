@@ -36,22 +36,13 @@ end stmt;
 if-stmt -> if (exp) then stmt-seq [else stmt-seq] end
 
 procedure if-stmt;
-var temp, newTemp:SyntaxTree;
-Node * tempPtr;
 match(if);
-temp.shape = rect;
-temp.tokenValue = if;
-temp.id = genId();
-match(()
-
-exp(tempPtr);
-temp.childNode[0] = tempPtr;
-match())
+exp;
 match(then);
-temp.childNode[1]=stmt-seq();
+stmt-seq;
 if(token == else)
     match(else);
-    temp.childNode[2] = stmt-seq();
+    stmt-seq;
 end if;
 match(end);
 end if-stmt;
@@ -79,10 +70,16 @@ read-stmt -> read identifier
 write-stmt -> write exp
 =====================
 exp -> simple-exp [comparison-op simple-exp]
+procedure exp;
+simple-exp;
+if(token == < || token == =)
+match(comparison-op)
+simple-exp;
+end if;
+end procedure exp;
 =====================
 comparison-op -> < | =
 =====================
-a=x-y-z+1+2+3
 simple-exp -> term {addop term}
 procedure simple-exp;
 term;
