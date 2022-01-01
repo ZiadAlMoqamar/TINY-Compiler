@@ -101,17 +101,23 @@ string Scanner(string TinyFileText)
                             state=6;
                             }
                     break;
-                    case 2:
+                case 2:
 
-                    while(TinyFileText[index] != '}')
-                        {
+                                    while(TinyFileText[index] != '}' && index < length)
+                                        {
 
-                            index++;
+                                            index++;
 
-                        }
-                        index++;
-                        state=1;
-                    break;
+                                        }
+
+                                    if(TinyFileText[index] == '}'){
+                                    index =index+1;}
+                                   else{
+                                    Token temp("{","error"); //didn't find closing curly brace }
+                                    tokenList.push_back(temp);
+                                }
+                                        state=1;
+                                    break;
                     case 3:
 
                     if(isdigit(TinyFileText[index]))
