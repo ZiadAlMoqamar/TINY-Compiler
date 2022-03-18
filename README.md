@@ -29,4 +29,4 @@ In this repo, my goal is to write a Tiny Parser using a predictive top-down pars
 - expressions are depicted as oval and statements are depicted as rectangle
 - max number of children for a statement is 3 children -- for an if statement
 - max number of children for an expression is 2
-- 
+
